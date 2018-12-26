@@ -10,16 +10,14 @@
 ## requirements
 
 - C++11,14,17 supported compiler
-- CI status
 
-| compiler | conda package                                                                                     | latest zip                                                                                         |
-| -------- | ------------------------------------------------------------------------------------------------- | ----------                                                                                         |
-| gcc-7    | ![gcc-7](https://travis-matrix-badges.herokuapp.com/repos/ShigekiKarita/cxx11-typed-argparser/branches/master/1)   | ![gcc-7](https://travis-matrix-badges.herokuapp.com/repos/ShigekiKarita/cxx11-typed-argparser/branches/master/2)    |
-| gcc-8    | ![gcc-8](https://travis-matrix-badges.herokuapp.com/repos/ShigekiKarita/cxx11-typed-argparser/branches/master/3)   | ![gcc-7](https://travis-matrix-badges.herokuapp.com/repos/ShigekiKarita/cxx11-typed-argparser/branches/master/4)    |
-| clang-5  | ![clang-5](https://travis-matrix-badges.herokuapp.com/repos/ShigekiKarita/cxx11-typed-argparser/branches/master/5) | ![clang-5](https://travis-matrix-badges.herokuapp.com/repos/ShigekiKarita/cxx11-typed-argparser/branches/master/6)  |
-| clang-6  | ![clang-6](https://travis-matrix-badges.herokuapp.com/repos/ShigekiKarita/cxx11-typed-argparser/branches/master/7) | ![clang-6](https://travis-matrix-badges.herokuapp.com/repos/ShigekiKarita/cxx11-typed-argparser/branches/master/8)  |
-| clang-7  | ![clang-7](https://travis-matrix-badges.herokuapp.com/repos/ShigekiKarita/cxx11-typed-argparser/branches/master/9) | ![clang-6](https://travis-matrix-badges.herokuapp.com/repos/ShigekiKarita/cxx11-typed-argparser/branches/master/10) |
-
+| compiler | CI status                                                                                                          |
+| -------- | -------------------------------------------------------------------------------------------------                  |
+| gcc-7    | ![gcc-7](https://travis-matrix-badges.herokuapp.com/repos/ShigekiKarita/cxx11-typed-argparser/branches/master/1)   |
+| gcc-8    | ![gcc-8](https://travis-matrix-badges.herokuapp.com/repos/ShigekiKarita/cxx11-typed-argparser/branches/master/2)   |
+| clang-5  | ![clang-5](https://travis-matrix-badges.herokuapp.com/repos/ShigekiKarita/cxx11-typed-argparser/branches/master/3) |
+| clang-6  | ![clang-6](https://travis-matrix-badges.herokuapp.com/repos/ShigekiKarita/cxx11-typed-argparser/branches/master/4) |
+| clang-7  | ![clang-7](https://travis-matrix-badges.herokuapp.com/repos/ShigekiKarita/cxx11-typed-argparser/branches/master/5) |
 
 
 ## how to install
