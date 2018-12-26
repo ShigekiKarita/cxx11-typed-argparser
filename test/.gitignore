@@ -6,5 +6,6 @@
 
 !.gitignore
 !test.json
+!Makefile
 
 catch.hpp
