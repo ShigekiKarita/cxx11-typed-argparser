@@ -165,3 +165,7 @@ int main(int argc, char* argv[]) {
 
 
 for more details, see [test/test.cpp](test/test.cpp)
+
+## note
+
+this library was first developed for https://github.com/ShigekiKarita/thxx
