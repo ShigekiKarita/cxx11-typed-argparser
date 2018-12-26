@@ -1,0 +1,10 @@
+*
+!*/
+!*.cpp
+!*.hpp
+!*.md
+
+!.gitignore
+!test.json
+
+catch.hpp

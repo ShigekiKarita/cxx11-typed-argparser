@@ -1,0 +1,13 @@
+*
+!*/
+!*.cpp
+!*.hpp
+!*.md
+
+!.gitignore
+!.travis.yml
+!test.json
+!LICENSE
+
+third_party
+catch.hpp

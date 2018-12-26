@@ -1,0 +1,142 @@
+language: cpp
+
+sudo: false
+
+matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+        - THXX_INSTALL=install-conda
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+        - THXX_INSTALL=install-latest
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-8
+      env:
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+        - THXX_INSTALL=install-conda
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-8
+      env:
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+        - THXX_INSTALL=install-latest
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - g++-8
+            - clang-5.0
+      env:
+        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+        - THXX_INSTALL=install-conda
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - g++-8
+            - clang-5.0
+      env:
+        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+        - THXX_INSTALL=install-latest
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-6.0
+          packages:
+            - g++-8
+            - clang-6.0
+      env:
+        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
+        - THXX_INSTALL=install-conda
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-6.0
+          packages:
+            - g++-8
+            - clang-6.0
+      env:
+        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
+        - THXX_INSTALL=install-latest
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-7
+          packages:
+            - g++-8
+            - clang-7
+      env:
+        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7"
+        - THXX_INSTALL=install-conda
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-7
+          packages:
+            - g++-8
+            - clang-7
+      env:
+        - MATRIX_EVAL="CC=clang-7 && CXX=clang++-7"
+        - THXX_INSTALL=install-latest
+  allow_failures:
+    - env: MATRIX_EVAL="CC=gcc-7 && CXX=g++-7" THXX_INSTALL=install-latest
+    - env: MATRIX_EVAL="CC=gcc-8 && CXX=g++-8" THXX_INSTALL=install-latest
+    - env: MATRIX_EVAL="CC=clang-5 && CXX=clang++-5" THXX_INSTALL=install-latest
+    - env: MATRIX_EVAL="CC=clang-6 && CXX=clang++-6" THXX_INSTALL=install-latest
+    - env: MATRIX_EVAL="CC=clang-7 && CXX=clang++-7" THXX_INSTALL=install-latest
+
+
+before_install:
+    - eval "${MATRIX_EVAL}"
+
+script:
+  - $CXX -v
+  - cd test
+  - make test CXXFLAGS=-std=c++11
+  - rm test.out
+  - make test CXXFLAGS=-std=c++14
+  - rm test.out
+  - make test CXXFLAGS=-std=c++17
+  - rm test.out
