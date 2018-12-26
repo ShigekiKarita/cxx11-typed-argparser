@@ -31,7 +31,7 @@ constexpr size_t asizeof(T(&)[N]) { return N; }
 
 TEST_CASE( "to_json", "[class]" ) {
     const char* argv[] = {"prog.exe", "--batch_size", "4", "--units", "100", "200", "300"};
-    static_assert(asizeof(argv) == 7);
+    static_assert(asizeof(argv) == 7, "");
     Opt opt(asizeof(argv), (char**) argv);
 
     CHECK( opt.batch_size == 4 );

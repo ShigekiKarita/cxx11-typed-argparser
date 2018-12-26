@@ -35,24 +35,27 @@ $ g++ your_file.cpp -std=c++11 # or -std=c++17
 - simple usage
 
 ``` c++
-// $ prog.exe --bar "0.1 --str foo --vec 0 1 2
+// $ prog.exe --bar "0.1 --str foo --vec 0 1 2 --use_cuda
 #include <typed_argparser.hpp>
 
 using typed_argparser::ArgParser;
 
 int main(int argc, char* argv[]) {
     std::string str = "";
+    bool flag = false;
     int foo = 2;
     double bar = 0;
     std::vector<int> vec;
 
     ArgParser parser(argc, argv);
     parser.required("--str", str); // error when not provided
+    parser.required("--flag", flag); // bool accepts true, false or no value (just --flag)
     parser.add("--foo", foo); // optional value
     parser.add("--bar", bar, "double value");  // optional comment
     parser.add("--vec", vec); // multiple value support with std::vector
 
     CHECK( foo == 2 );
+    CHECK( use_cuda == true );
     CHECK( bar == 0.1 );
     CHECK( str == "foo" );
     CHECK( vec == decltype(vec){0, 1, 2} );
@@ -107,6 +110,7 @@ prog.exe: help for test
 - class based config. json save
 
 ``` c++
+// $ prog.exe --batch_size 4 --units 100 200 300 --use_cuda
 #include <typed_argparser.hpp>
 
 using typed_argparser::ArgParser;
@@ -114,7 +118,7 @@ using typed_argparser::ArgParser;
 struct Opt : ArgParser {
     std::int64_t batch_size = 32;
     std::vector<std::int64_t> units = {1, 2, 3};
-    bool use_cuda = true;
+    bool use_cuda = false;
     std::string expdir = "";
     std::string json = "";
 
@@ -132,10 +136,7 @@ struct Opt : ArgParser {
 };
 
 int main(int argc, char* argv[]) {
-    const char* argv[] = {"prog.exe", "--batch_size", "4", "--units", "100", "200", "300"};
-    static_assert(asizeof(argv) == 7);
-    Opt opt(asizeof(argv), (char**) argv);
-
+    Opt opt(argc, argv);
     CHECK( opt.batch_size == 4 );
     CHECK( opt.units == decltype(opt.units){100, 200, 300} );
     CHECK( opt.use_cuda );
@@ -151,7 +152,7 @@ int main(int argc, char* argv[]) {
 /// struct Opt ...
 
 int main(int argc, char* argv[]) {
-    Opt opt(asizeof(argv), argv);
+    Opt opt(argc, argv);
     CHECK( opt.batch_size == 3 );
     CHECK( opt.units == decltype(opt.units){100, 200} );
     CHECK( opt.use_cuda == false );
