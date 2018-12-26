@@ -67,8 +67,8 @@ script:
   - $CXX -v
   - cd test
   - make test CXXFLAGS=-std=c++11
-  - rm test.out
+  - make clean
   - make test CXXFLAGS=-std=c++14
-  - rm test.out
+  - make clean
   - make test CXXFLAGS=-std=c++17
-  - rm test.out
+  - make clean
