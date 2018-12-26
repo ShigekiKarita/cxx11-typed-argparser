@@ -10,6 +10,7 @@
 ## requirements
 
 - C++11,14,17 supported compiler
+- CI status
 
 | compiler | conda package                                                                                     | latest zip                                                                                         |
 | -------- | ------------------------------------------------------------------------------------------------- | ----------                                                                                         |
