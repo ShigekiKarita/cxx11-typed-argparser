@@ -27,8 +27,11 @@ $ git clone https://github.com/ShigekiKarita/typed_argparser --recursive
 $ export CPLUS_INCLUDE_PATH=`pwd`/typed_argparser/include:$CPLUS_INCLUDE_PATH
 # if you do not have rapidjson
 $ export CPLUS_INCLUDE_PATH=`pwd`/typed_argparser/third_party/rapidjson/include:$CPLUS_INCLUDE_PATH
-$ g++ your_file.cpp -std=c++11 # or -std=c++17
+$ g++ typed_argparser/test/example.cpp -std=c++11 # or -std=c++14, -std=c++17
+$ ./example.out --help
 ```
+
+see [test/example.cpp](test/example.cpp) for more details.
 
 # usage
 
