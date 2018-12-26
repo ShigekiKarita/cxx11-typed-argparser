@@ -1,10 +1,10 @@
 # C++11 Typed Argument Parser
 
-`#include <typed_argparser.hpp>` provides:
+`#include <typed_argparser.hpp>` offers
 
 - single header only library (except for optional rapidjson)
 - json save/load (if you installed rapidjson)
-- typed arg registration
+- typed argument parsing
 - python's argparse like API
 
 ## requirements
@@ -22,7 +22,7 @@
 
 ## how to install
 
-```console
+```
 $ git clone https://github.com/ShigekiKarita/typed_argparser --recursive
 $ export CPLUS_INCLUDE_PATH=`pwd`/typed_argparser/include:$CPLUS_INCLUDE_PATH
 # if you do not have rapidjson
@@ -35,7 +35,7 @@ $ g++ your_file.cpp -std=c++11 # or -std=c++17
 - simple usage
 
 ``` c++
-// $ prog.exe --bar "0.1 --str foo --vec 0 1 2 --use_cuda
+// $ prog.exe --bar 0.1 --str foo --vec 0 1 2 --use_cuda
 #include <typed_argparser.hpp>
 
 using typed_argparser::ArgParser;
