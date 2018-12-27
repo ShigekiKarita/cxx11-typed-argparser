@@ -5,6 +5,7 @@
 #include <exception>
 #include <unordered_set>
 #include <unordered_map>
+#include <type_traits>
 
 // TODO has_include
 #include <cxxabi.h>
@@ -114,23 +115,64 @@ namespace typed_argparser {
     //                                         std::vector< typename T::value_type,
     //                                                      typename T::allocator_type > >::value;
 
+    template<typename T, typename _ = void>
+    struct is_container : std::false_type {};
+
+    template<typename... Ts>
+    struct is_container_helper {};
+
+    template<typename T>
+    struct is_container<
+        T,
+        typename std::conditional<
+            false,
+            is_container_helper<
+                typename T::value_type,
+                typename T::size_type,
+                // typename T::allocator_type, // not defined in std::array
+                typename T::iterator,
+                typename T::const_iterator,
+                decltype(std::declval<T>().size()),
+                decltype(std::declval<T>().begin()),
+                decltype(std::declval<T>().end()),
+                decltype(std::declval<T>().cbegin()),
+                decltype(std::declval<T>().cend()),
+                typename std::enable_if<
+                    !std::is_same<std::string, typename std::decay<T>::type>::value
+                    >::type
+                >,
+            void
+            >::type
+        > : public std::true_type {};
+
     template <typename T>
     struct vector_tag_of {
         static constexpr TypeTag value =
-            std::is_same<typename std::decay<T>::type, bool>::value ? TypeTag::Bool :
+            std::is_same<typename std::decay<T>::type, bool>::value ? TypeTag::BoolVector :
             std::is_integral<T>::value ? TypeTag::IntVector :
             std::is_floating_point<T>::value ? TypeTag::FloatVector :
-            TypeTag::StringVector;
+            std::is_same<typename std::decay<T>::type, std::string>::value ? TypeTag::StringVector :
+            TypeTag::Unknown;
     };
 
     template <typename T>
+    typename std::enable_if<is_container<T>::value, typename T::value_type>::type value_t();
+
+    template <typename T>
+    typename std::enable_if<!is_container<T>::value>::type value_t();
+
+    template <typename T>
+    using value_type = decltype(value_t<T>());
+
+    template <typename T>
     struct type_tag_of  {
-        static constexpr TypeTag value = // is_vector<T> ?  vector_tag_of<T> :
-                std::is_same<typename std::decay<T>::type, bool>::value ? TypeTag::Bool :
-                std::is_integral<T>::value ? TypeTag::Int :
-                std::is_floating_point<T>::value ? TypeTag::Float :
-                std::is_same<typename std::decay<T>::type, std::string>::value ? TypeTag::String :
-                TypeTag::Unknown;
+        static constexpr TypeTag value =
+            std::is_same<typename std::decay<T>::type, bool>::value ? TypeTag::Bool :
+            std::is_integral<T>::value ? TypeTag::Int :
+            std::is_floating_point<T>::value ? TypeTag::Float :
+            std::is_same<typename std::decay<T>::type, std::string>::value ? TypeTag::String :
+            is_container<T>::value ?  vector_tag_of<value_type<T>>::value :
+            TypeTag::Unknown;
     };
 
     struct ArgValue {
@@ -478,4 +520,6 @@ namespace typed_argparser {
 #endif // __has_include(<rapidjson/writer.h>)
     };
 
+    template <typename T, size_t N>
+    constexpr size_t asizeof(T(&)[N]) { return N; }
 }

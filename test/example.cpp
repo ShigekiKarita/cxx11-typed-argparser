@@ -16,7 +16,7 @@ struct Opt : ArgParser {
             from_json(json);
         }
 
-        required("--batch_size", batch_size, "batch size for training");
+        add("--batch_size", batch_size, "batch size for training");
         add("--use_cuda", use_cuda, "flag to enable cuda");
         add("--units", units, "number of units");
         add("--expdir", expdir, "experiment directory");

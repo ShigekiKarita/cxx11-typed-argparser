@@ -45,14 +45,14 @@ using typed_argparser::ArgParser;
 
 int main(int argc, char* argv[]) {
     std::string str = "";
-    bool flag = false;
+    bool use_cuda = false;
     int foo = 2;
     double bar = 0;
     std::vector<int> vec;
 
     ArgParser parser(argc, argv);
     parser.required("--str", str); // error when not provided
-    parser.required("--flag", flag); // bool accepts true, false or no value (just --flag)
+    parser.required("--flag", use_cuda); // bool accepts true, false or no value (just --flag)
     parser.add("--foo", foo); // optional value
     parser.add("--bar", bar, "double value");  // optional comment
     parser.add("--vec", vec); // multiple value support with std::vector
@@ -164,7 +164,7 @@ int main(int argc, char* argv[]) {
 ```
 
 
-for more details, see [test/test.cpp](test/test.cpp)
+for more details, see [test/](test/)
 
 ## note
 
