@@ -247,7 +247,6 @@ namespace typed_argparser {
             return TypeTag::Bool;
         }
 
-
         TypeTag assign(const Value& src, std::string& dst) const {
             dst = src[0];
             return TypeTag::String;
@@ -267,25 +266,19 @@ namespace typed_argparser {
             return TypeTag::Float;
         }
 
-        template <typename T, typename Alloc>
-        TypeTag assign(const Value& src, std::vector<T, Alloc>& dst) const {
-            dst.resize(src.size());
-            for (size_t i = 0; i < src.size(); ++i) {
-                assign({src[i]}, dst[i]);
-            }
-            return vector_tag_of<T>::value;
-        }
-
         template <typename T>
-        void set_default_value(const std::string& key, const T& v) {
-            Value val = {std::to_string(v)};
-            ArgValue a;
-            a.key = key;
-            a.value = val;
-            a.type = type_tag_of<T>::value;
-            this->parsed_map[key] = a;
+        typename std::enable_if<is_container<T>::value, TypeTag>::type
+        assign(const Value& src, T& dst) const {
+            dst.clear();
+            // TODO reserve if possible
+            // val.reserve(v.size());
+            for (size_t i = 0; i < src.size(); ++i) {
+                value_type<T> d;
+                assign({src[i]}, d);
+                dst.push_back(d);
+            }
+            return type_tag_of<T>::value;
         }
-
 
         void set_default_value(const std::string& key, const bool& v) {
             Value val = {v ? "true" : "false"};
@@ -306,16 +299,29 @@ namespace typed_argparser {
         }
 
         template <typename T>
-        void set_default_value(const std::string& key, const std::vector<T>& v) {
-            std::vector<std::string> val;
-            val.reserve(v.size());
-            for (const T& u: v) {
+        typename std::enable_if<!is_container<T>::value>::type
+        set_default_value(const std::string& key, const T& v) {
+            Value val = {std::to_string(v)};
+            ArgValue a;
+            a.key = key;
+            a.value = val;
+            a.type = type_tag_of<T>::value;
+            this->parsed_map[key] = a;
+        }
+
+        template <typename T>
+        typename std::enable_if<is_container<T>::value>::type
+        set_default_value(const std::string& key, const T& v) {
+            Value val;
+            // TODO reserve if possible
+            // val.reserve(v.size());
+            for (const auto& u: v) {
                 val.push_back(std::to_string(u));
             }
             ArgValue a;
             a.key = key;
             a.value = val;
-            a.type = vector_tag_of<T>::value;
+            a.type = type_tag_of<T>::value;
             this->parsed_map[key] = a;
         }
 

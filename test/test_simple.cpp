@@ -1,6 +1,7 @@
 #include <typed_argparser.hpp>
 
 #include <iostream>
+#include <list>
 #include <deque>
 #include <vector>
 
@@ -12,12 +13,17 @@ TEST_CASE( "parse", "[simple]" ) {
     std::string str = "";
     int foo = 2;
     double bar = 0;
+
     std::vector<int> vec;
+    std::deque<int> deq;
+    std::list<int> lis;
     std::vector<bool> bools;
 
     const char* argv[] = {
         "prog.exe", "--bar", "0.1", "--str", "foo",
         "--vec", "0", "1", "2",
+        "--deq", "0", "1", "2",
+        "--lis", "0", "1", "2",
         "--bools", "true", "false", "true"
     };
     int argc = asizeof(argv);
@@ -26,12 +32,16 @@ TEST_CASE( "parse", "[simple]" ) {
     parser.add("--foo", foo); // optional value
     parser.add("--bar", bar, "double value");  // optional comment
     parser.add("--vec", vec); // multiple value support with std::vector
-    parser.add("--bools", bools); // multiple value support with std::vector
+    parser.add("--deq", deq);
+    parser.add("--lis", lis);
+    parser.add("--bools", bools);
 
     CHECK( foo == 2 );
     CHECK( bar == 0.1 );
     CHECK( str == "foo" );
     CHECK( vec == decltype(vec){0, 1, 2} );
+    CHECK( deq == decltype(deq){0, 1, 2} );
+    CHECK( lis == decltype(lis){0, 1, 2} );
     CHECK( bools == decltype(bools){true, false, true} );
 }
 
