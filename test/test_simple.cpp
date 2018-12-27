@@ -28,7 +28,7 @@ TEST_CASE( "parse", "[simple]" ) {
     };
     int argc = asizeof(argv);
     ArgParser parser(argc, argv);
-    parser.required("--str", str); // error when not provided
+    parser.require("--str", str); // error when not provided
     parser.add("--foo", foo); // optional value
     parser.add("--bar", bar, "double value");  // optional comment
     parser.add("--vec", vec); // multiple value support with std::vector
@@ -54,13 +54,13 @@ TEST_CASE( "help", "[simple]" ) {
     const char* argv[] = {"prog.exe", "--help"};
     int argc = asizeof(argv);
     ArgParser parser(argc, argv, "prog.exe: help for test");
-    parser.required("--str", str); // error when not provided
+    parser.require("--str", str); // error when not provided
     parser.add("--foo", foo); // optional value
     parser.add("--bar", bar, "double value");  // optional comment
     parser.add("--vec", vec); // multiple value support with std::vector
 
     auto help = R"(prog.exe: help for test
-  --str (required)
+  --str (require)
     type: std::string, default:foo
 
   --foo

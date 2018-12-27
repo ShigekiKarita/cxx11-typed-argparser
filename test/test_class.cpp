@@ -17,7 +17,7 @@ struct Opt : ArgParser {
         if (!json.empty()) {
             from_json(json);
         }
-        required("--batch_size", batch_size);
+        require("--batch_size", batch_size);
         add("--use_cuda", use_cuda);
         add("--units", units);
         add("--expdir", expdir);

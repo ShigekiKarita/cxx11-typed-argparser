@@ -337,10 +337,10 @@ namespace typed_argparser {
         }
 
         template <typename T>
-        void add(const std::string& key, T& value, const std::string& doc="", bool required=false) {
+        void add(const std::string& key, T& value, const std::string& doc="", bool require=false) {
             if (this->help_wanted) {
                 this->_help_stream << std::boolalpha
-                                   << "  " << key << (required ? " (required)" : "") << std::endl;
+                                   << "  " << key << (require ? " (require)" : "") << std::endl;
                 this->_help_stream << "    type: " << Demangle<T>()
                                    << ", default:" << value << std::endl;
                 if (!doc.empty()) {
@@ -361,8 +361,8 @@ namespace typed_argparser {
                     throw ArgParserError(std::string(e.what()) + "\nthrown from key: " + key);
                 }
             }
-            else if (required && this->use_cmd_args) {
-                std::string msg = "cmd arg: \"" + key + "\" is required but not found.";
+            else if (require && this->use_cmd_args) {
+                std::string msg = "cmd arg: \"" + key + "\" is require but not found.";
                 throw ArgParserError(msg);
             }
             else {
@@ -371,7 +371,7 @@ namespace typed_argparser {
         }
 
         template <typename T>
-        void required(const std::string& key, T& value, const std::string& doc="") {
+        void require(const std::string& key, T& value, const std::string& doc="") {
             add(key, value, doc, true);
         }
 

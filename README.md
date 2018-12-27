@@ -39,78 +39,63 @@ For simplicity, this library only supports
 
 - key should start with two dash: "--"
 - arg should **not** start with two dash. you need to escape it `--str "\--foo"`
-- value should be `bool`, `int` (where `std::integral<T>::value == true`), `float`, `double`, `std::string`
-- list value should be `std::vector<T>` where T is one of the type above. (WIP: support general container_type)
+- value should be `bool`, integral (where `std::integral<T>::value == true`), `float`, `double`, `std::string`
+- list value should be something like `std::vector` where `typed_argparse::is_container<T>::value == true`. (NOTE: std::vector, deque, list are tested but std::array<T, N> is not supported now)
 - bool arg should be "true", "false" (`--flag true`) or nothing but key `--bool_flag --next_flag ...`
 
 # usage
 
-- simple usage
+- simple usage (basic assign, json load/dump) [test/example_simple.cpp](test/example_simple.cpp)
 
 ``` c++
 // $ prog.exe --bar 0.1 --str foo --vec 0 1 2 --use_cuda
 #include <typed_argparser.hpp>
+#include <iostream>
 
 using typed_argparser::ArgParser;
 
 int main(int argc, char* argv[]) {
-    std::string str = "";
-    bool use_cuda = false;
-    int foo = 2;
-    double bar = 0;
-    std::vector<int> vec;
-
-    ArgParser parser(argc, argv);
-    parser.required("--str", str); // error when not provided
-    parser.required("--flag", use_cuda); // bool accepts true, false or no value (just --flag)
-    parser.add("--foo", foo); // optional value
-    parser.add("--bar", bar, "double value");  // optional comment
-    parser.add("--vec", vec); // multiple value support with std::vector
-
-    CHECK( foo == 2 );
-    CHECK( use_cuda == true );
-    CHECK( bar == 0.1 );
-    CHECK( str == "foo" );
-    CHECK( vec == decltype(vec){0, 1, 2} );
-}
-```
-
-- auto generated help message with type and default values
-
-``` c++
-// $ prog.exe --help
-#include <typed_argparser.hpp>
-
-using typed_argparser::ArgParser;
-
-int main(int argc, char* argv[]) {
+    std::string json;
     std::string str = "foo";
     int foo = 2;
     double bar = 0;
     std::vector<int> vec = {1, 2, 3};
+    bool use_cuda = false;
 
     ArgParser parser(argc, argv, "prog.exe: help for test");
-    parser.required("--str", str); // error when not provided
-    parser.add("--foo", foo); // optional value
+    parser.add("--json", json, "json path or body");
+    if (!json.empty()) {
+        parser.from_json(json);
+    }
+    parser.require("--str", str); // .require value throws error when not provided
+    parser.add("--foo", foo, ".add registers optional value");
     parser.add("--bar", bar, "double value");  // optional comment
-    parser.add("--vec", vec); // multiple value support with std::vector
+    parser.add("--vec", vec, "multiple value support with std::vector/deque/list, etc");
+    parser.add("--use_cuda", use_cuda, R"(bool value accepts "true" and nothing to store true, and "false" to store false.)");
 
     if (parser.help_wanted) {
-        std::cout << "R\"(" << parser.help_message() << ")\"" << std::endl;
+        std::cout << parser.help_message() << std::endl;
+        std::exit(0);
     }
+    std::cout << parser.to_json() << std::endl;
 }
 ```
 
-it prints as follows:
+this example prints auto-generated help message with type and default values as follows:
 
 ``` console
 $ ./prog.exe --help
 prog.exe: help for test
-  --str (required)
+  --json
+    type: std::string, default:
+    json path or body
+
+  --str (require)
     type: std::string, default:foo
 
   --foo
     type: int, default:2
+    .add registers optional value
 
   --bar
     type: double, default:0
@@ -118,61 +103,32 @@ prog.exe: help for test
 
   --vec
     type: std::vector<int>, default:{1, 2, 3}
+    multiple value support with std::vector/deque/list, etc
+
+  --use_cuda
+    type: bool, default:false
+    bool value accepts "true" and nothing to store true, and "false" to store false.
+
+
 ```
 
-- class based config. json save
+you can load json by your `--json` option.
 
-``` c++
-// $ prog.exe --batch_size 4 --units 100 200 300 --use_cuda
-#include <typed_argparser.hpp>
-
-using typed_argparser::ArgParser;
-
-struct Opt : ArgParser {
-    std::int64_t batch_size = 32;
-    std::vector<std::int64_t> units = {1, 2, 3};
-    bool use_cuda = false;
-    std::string expdir = "";
-    std::string json = "";
-
-    Opt(int argc, const char* const argv[]) : ArgParser(argc, argv) {
-        add("--json", json);
-        if (!json.empty()) {
-            from_json(json);
-        }
-        required("--batch_size", batch_size);
-        add("--use_cuda", use_cuda);
-        add("--units", units);
-        add("--expdir", expdir);
-        check();
-    }
-};
-
-int main(int argc, char* argv[]) {
-    Opt opt(argc, argv);
-    CHECK( opt.batch_size == 4 );
-    CHECK( opt.units == decltype(opt.units){100, 200, 300} );
-    CHECK( opt.use_cuda );
-    // if you pass true or nothing, output json is pretty formatted.
-    CHECK( opt.to_json(false) == R"({"--use_cuda":true,"--json":"","--expdir":"","--batch_size":4,"--units":[100,200,300]})" );
+```
+$ prog.exe --json '{"--batch_size":3,"--use_cuda":false,"--expdir":"/home","--units":[100,200]}'
+{
+    "--vec": [1, 2, 3],
+    "--use_cuda": false,
+    "--str": "foo",
+    "--batch_size": "3",
+    "--expdir": "/home",
+    "--bar": 0.0,
+    "--units": "100",
+    "--foo": 2
 }
 ```
 
-- json load
-
-``` c++
-// $ prog.exe --json '{"--batch_size":3,"--use_cuda":false,"--expdir":"/home","--units":[100,200]}'
-/// struct Opt ...
-
-int main(int argc, char* argv[]) {
-    Opt opt(argc, argv);
-    CHECK( opt.batch_size == 3 );
-    CHECK( opt.units == decltype(opt.units){100, 200} );
-    CHECK( opt.use_cuda == false );
-    CHECK( opt.expdir == "/home" );
-}
-```
-
+- TODO: user-defined `assign(const Value& src, T& dst)` example with the class API
 
 for more details, see [test/](test/)
 
