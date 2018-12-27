@@ -33,6 +33,16 @@ $ ./example.out --help
 
 see [test/example.cpp](test/example.cpp) for more details.
 
+# limitations
+
+For simplicity, this library only supports
+
+- key should start with two dash: "--"
+- arg should **not** start with two dash. you need to escape it `--str "\--foo"`
+- value should be `bool`, `int` (where `std::integral<T>::value == true`), `float`, `double`, `std::string`
+- list value should be `std::vector<T>` where T is one of the type above. (WIP: support general container_type)
+- bool arg should be "true", "false" (`--flag true`) or nothing but key `--bool_flag --next_flag ...`
+
 # usage
 
 - simple usage
