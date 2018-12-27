@@ -37,15 +37,15 @@ see [test/example.cpp](test/example.cpp) for more details.
 
 For simplicity, this library only supports
 
-- key should start with two dash: "--"
-- arg should **not** start with two dash. you need to escape it `--str "\--foo"`
-- value should be `bool`, integral (where `std::integral<T>::value == true`), `float`, `double`, `std::string`
-- list value should be something like `std::vector` where `typed_argparse::is_container<T>::value == true`. (NOTE: std::vector, deque, list are tested but std::array<T, N> is not supported now)
-- bool arg should be "true", "false" (`--flag true`) or nothing but key `--bool_flag --next_flag ...`
+- Key should start with two dashes "--".
+- Arg should **not** start with two dashes "--". You need to escape it `--str "\--foo"`.
+- Value should be `bool`, integral (where `std::integral<T>::value == true`), `float`, `double`, and `std::string`.
+- List value should be something like `std::vector` where `typed_argparse::is_container<T>::value == true`.
+- bool typed arg should be "true", "false" (`--flag true`) or nothing but key `--bool_flag --next_flag ...`.
 
 # usage
 
-- simple usage (basic assign, json load/dump) [test/example_simple.cpp](test/example_simple.cpp)
+[test/example_simple.cpp](test/example_simple.cpp)
 
 ``` c++
 // $ prog.exe --bar 0.1 --str foo --vec 0 1 2 --use_cuda
@@ -131,4 +131,4 @@ for more details, see [test/](test/)
 
 ## note
 
-this library was first developed for https://github.com/ShigekiKarita/thxx
+this library was developed originally for https://github.com/ShigekiKarita/thxx
