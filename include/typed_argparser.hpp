@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <array>
 #include <exception>
 #include <unordered_set>
 #include <unordered_map>
@@ -276,6 +277,19 @@ namespace typed_argparser {
                 dst.push_back(d);
             }
             return type_tag_of<T>::value;
+        }
+
+        template <typename T, size_t N>
+        TypeTag assign(const Value& src, std::array<T, N>& dst) const {
+            if (src.size() != N) {
+                std::stringstream ss;
+                ss << "defined array length " << N << " != " << src.size();
+                throw ArgParserError(ss.str());
+            }
+            for (size_t i = 0; i < src.size(); ++i) {
+                assign({src[i]}, dst[i]);
+            }
+            return vector_tag_of<T>::value;
         }
 
         void set_default_value(const std::string& key, const bool& v) {

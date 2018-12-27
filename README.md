@@ -36,9 +36,9 @@ $ ./example.out --help
 For simplicity, this library only supports
 
 - Key should start with two dashes "--".
-- Arg should **not** start with two dashes "--". You need to escape it `--str "\--foo"`.
+- Arg should **not** start with two dashes "--". You need to escape it.
 - Value should be `bool`, integral (where `std::integral<T>::value == true`), `float`, `double`, and `std::string`.
-- List value should be something like `std::vector` where `typed_argparse::is_container<T>::value == true`.
+- List value should be something like `std::vector` where `typed_argparse::is_container<T>::value == true` i.e., [SequenceContainer](https://en.cppreference.com/w/cpp/named_req/SequenceContainer) except for `std::forward_list` (WIP).
 - bool typed arg should be "true", "false" (`--flag true`) or nothing but key `--bool_flag --next_flag ...`.
 
 # usage

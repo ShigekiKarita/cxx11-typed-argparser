@@ -1,6 +1,7 @@
 #include <vector>
 #include <deque>
 #include <list>
+#include <forward_list>
 #include <array>
 #include <unordered_set>
 #include <unordered_map>
@@ -26,6 +27,27 @@ TEST_CASE( "type_tag_of", "[traits]" ) {
     static_assert(type_tag_of<std::deque<int>>::value == TypeTag::IntVector, "");
     static_assert(type_tag_of<std::deque<float>>::value == TypeTag::FloatVector, "");
     static_assert(type_tag_of<std::deque<std::string>>::value == TypeTag::StringVector, "");
+
+    static_assert(type_tag_of<std::list<bool>>::value == TypeTag::BoolVector, "");
+    static_assert(type_tag_of<std::list<int>>::value == TypeTag::IntVector, "");
+    static_assert(type_tag_of<std::list<float>>::value == TypeTag::FloatVector, "");
+    static_assert(type_tag_of<std::list<std::string>>::value == TypeTag::StringVector, "");
+
+    static_assert(type_tag_of<std::array<bool, 1>>::value == TypeTag::BoolVector, "");
+    static_assert(type_tag_of<std::array<int, 1>>::value == TypeTag::IntVector, "");
+    static_assert(type_tag_of<std::array<float, 1>>::value == TypeTag::FloatVector, "");
+    static_assert(type_tag_of<std::array<std::string, 1>>::value == TypeTag::StringVector, "");
+
+    static_assert(type_tag_of<std::unordered_set<bool>>::value == TypeTag::BoolVector, "");
+    static_assert(type_tag_of<std::unordered_set<int>>::value == TypeTag::IntVector, "");
+    static_assert(type_tag_of<std::unordered_set<float>>::value == TypeTag::FloatVector, "");
+    static_assert(type_tag_of<std::unordered_set<std::string>>::value == TypeTag::StringVector, "");
+
+    // not supported now
+    // static_assert(type_tag_of<std::forward_list<bool>>::value == TypeTag::BoolVector, "");
+    // static_assert(type_tag_of<std::forward_list<int>>::value == TypeTag::IntVector, "");
+    // static_assert(type_tag_of<std::forward_list<float>>::value == TypeTag::FloatVector, "");
+    // static_assert(type_tag_of<std::forward_list<std::string>>::value == TypeTag::StringVector, "");
 }
 
 TEST_CASE( "is_container", "[traits]" ) {
