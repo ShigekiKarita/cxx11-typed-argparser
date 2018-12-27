@@ -117,13 +117,12 @@ you can load json by your `--json` option.
 ```
 $ prog.exe --json '{"--batch_size":3,"--use_cuda":false,"--expdir":"/home","--units":[100,200]}'
 {
-    "--vec": [1, 2, 3],
+    "--bar": 0.0,
     "--use_cuda": false,
+    "--vec": [100, 200],
     "--str": "foo",
     "--batch_size": "3",
     "--expdir": "/home",
-    "--bar": 0.0,
-    "--units": "100",
     "--foo": 2
 }
 ```
