@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
     parser.add("--bar", bar, "double value");  // optional comment
     parser.add("--vec", vec, "multiple value support with std::vector/deque/list, etc");
     parser.add("--use_cuda", use_cuda, R"(bool value accepts "true" and nothing to store true, and "false" to store false.)");
-
+    parser.check();
     if (parser.help_wanted) {
         std::cout << parser.help_message() << std::endl;
         std::exit(0);

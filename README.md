@@ -72,7 +72,7 @@ int main(int argc, char* argv[]) {
     parser.add("--bar", bar, "double value");  // optional comment
     parser.add("--vec", vec, "multiple value support with std::vector/deque/list, etc");
     parser.add("--use_cuda", use_cuda, R"(bool value accepts "true" and nothing to store true, and "false" to store false.)");
-
+    parser.check(); // throw error if invalid (unregistered) key is in argv
     if (parser.help_wanted) {
         std::cout << parser.help_message() << std::endl;
         std::exit(0);
@@ -112,18 +112,16 @@ prog.exe: help for test
 
 ```
 
-you can load json by your `--json` option.
+you can load json by your `--json` option. unspecified optional keys still use their default values.
 
 ```
-$ prog.exe --json '{"--batch_size":3,"--use_cuda":false,"--expdir":"/home","--units":[100,200]}'
+$ prog.exe --json '{"--str":"foo","--use_cuda":false,"--units":[100,200]}'
 {
     "--bar": 0.0,
-    "--use_cuda": false,
+    "--foo": 2,
     "--vec": [100, 200],
     "--str": "foo",
-    "--batch_size": "3",
-    "--expdir": "/home",
-    "--foo": 2
+    "--use_cuda": false
 }
 ```
 

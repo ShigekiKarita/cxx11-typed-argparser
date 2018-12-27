@@ -184,26 +184,24 @@ namespace typed_argparser {
         std::string help_start;
         std::string help_end;
         std::string help = "--help";
-        bool use_cmd_args = false;
         bool help_wanted = false;
-        std::unordered_set<std::string> keys;
+        std::unordered_set<std::string> added_keys;
         std::unordered_map<std::string, ArgValue> parsed_map;
 
         void clear() {
-            this->use_cmd_args = false;
             this->help_wanted = false;
-            this->keys.clear();
+            this->added_keys.clear();
             this->parsed_map.clear();
         }
 
-        ArgParser() : use_cmd_args(false) {}
+        ArgParser() {}
 
         ArgParser(int argc, const char* const argv[])
             : ArgParser(argc, argv, argv[0]) {}
 
         ArgParser(int argc, const char* const argv[],
                   const std::string& help_start, const std::string& help_end="")
-            : help_start(help_start), help_end(help_end), use_cmd_args(true) {
+            : help_start(help_start), help_end(help_end) {
             std::string key;
             std::vector<std::string> value;
             for (int i = 1; i < argc; ++i) {
@@ -352,7 +350,7 @@ namespace typed_argparser {
             if (key.substr(0, 2) != "--") {
                 throw ArgParserError("key should start with \"--\" but \"" + key + "\".");
             }
-            this->keys.insert(key);
+            this->added_keys.insert(key);
             if (this->parsed_map.find(key) != this->parsed_map.end()) {
                 try {
                     parsed_map[key].type = assign(parsed_map[key].value, value);
@@ -361,7 +359,7 @@ namespace typed_argparser {
                     throw ArgParserError(std::string(e.what()) + "\nthrown from key: " + key);
                 }
             }
-            else if (require && this->use_cmd_args) {
+            else if (require) {
                 std::string msg = "cmd arg: \"" + key + "\" is require but not found.";
                 throw ArgParserError(msg);
             }
@@ -379,7 +377,7 @@ namespace typed_argparser {
         void check() {
             std::string invalid;
             for (const auto& kv : this->parsed_map) {
-                if (this->keys.find(kv.first) == this->keys.end()) {
+                if (this->added_keys.find(kv.first) == this->added_keys.end()) {
                     invalid += kv.first +  ", ";
                 }
             }
