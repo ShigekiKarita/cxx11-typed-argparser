@@ -31,8 +31,6 @@ $ g++ typed_argparser/test/example.cpp -std=c++11 # or -std=c++14, -std=c++17
 $ ./example.out --help
 ```
 
-see [test/example.cpp](test/example.cpp) for more details.
-
 # limitations
 
 For simplicity, this library only supports
