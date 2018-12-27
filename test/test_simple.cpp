@@ -1,6 +1,10 @@
-#include <catch.hpp>
-#include <iostream>
 #include <typed_argparser.hpp>
+
+#include <iostream>
+#include <deque>
+#include <vector>
+
+#include <catch.hpp>
 
 using namespace typed_argparser;
 
@@ -9,19 +13,26 @@ TEST_CASE( "parse", "[simple]" ) {
     int foo = 2;
     double bar = 0;
     std::vector<int> vec;
+    std::vector<bool> bools;
 
-    const char* argv[] = {"prog.exe", "--bar", "0.1", "--str", "foo", "--vec", "0", "1", "2"};
+    const char* argv[] = {
+        "prog.exe", "--bar", "0.1", "--str", "foo",
+        "--vec", "0", "1", "2",
+        "--bools", "true", "false", "true"
+    };
     int argc = asizeof(argv);
     ArgParser parser(argc, argv);
     parser.required("--str", str); // error when not provided
     parser.add("--foo", foo); // optional value
     parser.add("--bar", bar, "double value");  // optional comment
     parser.add("--vec", vec); // multiple value support with std::vector
+    parser.add("--bools", bools); // multiple value support with std::vector
 
     CHECK( foo == 2 );
     CHECK( bar == 0.1 );
     CHECK( str == "foo" );
     CHECK( vec == decltype(vec){0, 1, 2} );
+    CHECK( bools == decltype(bools){true, false, true} );
 }
 
 TEST_CASE( "help", "[simple]" ) {

@@ -21,6 +21,11 @@ TEST_CASE( "type_tag_of", "[traits]" ) {
     static_assert(type_tag_of<std::vector<int>>::value == TypeTag::IntVector, "");
     static_assert(type_tag_of<std::vector<float>>::value == TypeTag::FloatVector, "");
     static_assert(type_tag_of<std::vector<std::string>>::value == TypeTag::StringVector, "");
+
+    static_assert(type_tag_of<std::deque<bool>>::value == TypeTag::BoolVector, "");
+    static_assert(type_tag_of<std::deque<int>>::value == TypeTag::IntVector, "");
+    static_assert(type_tag_of<std::deque<float>>::value == TypeTag::FloatVector, "");
+    static_assert(type_tag_of<std::deque<std::string>>::value == TypeTag::StringVector, "");
 }
 
 TEST_CASE( "is_container", "[traits]" ) {
@@ -29,6 +34,7 @@ TEST_CASE( "is_container", "[traits]" ) {
     static_assert(is_container<std::list<int>>::value, "");
     static_assert(is_container<std::array<int, 3>>::value, "");
     static_assert(is_container<std::unordered_set<int>>::value, "");
+    // TODO support this?
     // static_assert(is_container<std::unordered_set<int, int>>::value, "");
 
     static_assert(!is_container<int>::value, "");

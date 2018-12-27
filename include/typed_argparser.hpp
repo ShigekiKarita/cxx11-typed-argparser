@@ -76,22 +76,6 @@ namespace typed_argparser {
         }
     };
 
-    template <typename T, typename Alloc>
-    std::ostream& operator << (std::ostream& ostr, const std::vector<T, Alloc>& v) {
-        if (v.empty()) {
-            ostr << "{}";
-            return ostr;
-        }
-        ostr << "{" << v.front();
-        if (v.size() > 1) {
-            for (size_t i = 1; i < v.size(); ++i) {
-                ostr << ", " << v[i];
-            }
-        }
-        ostr << "}";
-        return ostr;
-    }
-
     class ArgParserError : public std::invalid_argument {
     public:
         using std::invalid_argument::invalid_argument;
@@ -109,11 +93,6 @@ namespace typed_argparser {
         FloatVector,
         StringVector
     };
-
-    // template <typename T>
-    // constexpr bool is_vector = std::is_same<typename std::decay<T>::type,
-    //                                         std::vector< typename T::value_type,
-    //                                                      typename T::allocator_type > >::value;
 
     template<typename T, typename _ = void>
     struct is_container : std::false_type {};
@@ -144,6 +123,24 @@ namespace typed_argparser {
             void
             >::type
         > : public std::true_type {};
+
+
+    template <typename T>
+    typename std::enable_if<is_container<T>::value, std::ostream&>::type
+    operator << (std::ostream& ostr, const T& v) {
+        if (v.empty()) {
+            ostr << "{}";
+            return ostr;
+        }
+        ostr << "{" << v.front();
+        if (v.size() > 1) {
+            for (auto iter = std::next(v.begin()); iter != v.end(); ++iter) {
+                ostr << ", " << *iter;
+            }
+        }
+        ostr << "}";
+        return ostr;
+    }
 
     template <typename T>
     struct vector_tag_of {
@@ -227,20 +224,29 @@ namespace typed_argparser {
             this->_help_stream << this->help_start << std::endl;
         }
 
-        // only empty (i.e., just --option) and "true" can be true, only "false" can be false
-        TypeTag assign(const Value& src, bool& dst) const {
+        static bool to_bool(const Value& src) {
             if (src.size() == 0) {
-                dst = true;
+                return true;
             }
-            else {
-                const std::string& v = src[0];
-                if (v != "true" && v != "false") {
-                    throw ArgParserError("bool value should be \"true\" or \"false\" but passed: \"" + v + "\"");
-                }
-                dst = v == "true";
+            const std::string& v = src[0];
+            if (v != "true" && v != "false" && src.size() != 1) {
+                std::stringstream ret;
+                ret << "bool value should be \"true\" or \"false\" but passed: \"" << src[0] << "\"";
+                throw ArgParserError(ret.str());
             }
+            return v == "true";
+        }
+
+        TypeTag assign(const Value& src, bool& dst) const {
+            dst = to_bool(src);
             return TypeTag::Bool;
         }
+
+        TypeTag assign(const Value& src, std::vector<bool>::reference dst) const {
+            dst = to_bool(src);
+            return TypeTag::Bool;
+        }
+
 
         TypeTag assign(const Value& src, std::string& dst) const {
             dst = src[0];
